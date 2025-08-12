@@ -23,6 +23,8 @@
     }
   ],
   "hosting": {
+    "site": "miltonniklasson",
+    "public": "public",
     "source": "hosting",
     "ignore": [
       "firebase.json",
