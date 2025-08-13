@@ -26,5 +26,12 @@ module.exports = {
     quotes: ["error", "double"],
     "import/no-unresolved": 0,
     indent: ["error", 2],
+    "max-len": [
+      "error",
+      { code: 100, ignoreStrings: true, ignoreTemplateLiterals: true },
+    ],
+    "quote-props": "off",
+    "object-curly-spacing": "off",
+    "no-tabs": ["error"],
   },
 };

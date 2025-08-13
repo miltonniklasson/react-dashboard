@@ -1,18 +1,45 @@
-rules_version='2'
+rules_version = '2'
+
+// Principle of least privilege:
+// - /users/{userId}: user can read/update only their own doc.
+// - Other collections: denied by default until explicitly added.
+// Firestore rules are expression based; no 'if' statements.
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function validUserProfile() {
+      return request.resource.data.keys().hasOnly(['email','displayName','createdAt']);
+    }
+
+    // Settings doc validation: allow 'ui' map plus server-managed 'updatedAt'
+    function validUserSettings() {
+      return request.resource.data.keys().hasOnly(['ui','updatedAt']) &&
+        (!('ui' in request.resource.data) ||
+          !('scale' in request.resource.data.ui) ||
+          (request.resource.data.ui.scale >= 0.8 && request.resource.data.ui.scale <= 2));
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && validUserProfile();
+      allow update: if isOwner(userId) && validUserProfile();
+      // Disallow delete for now (change if you want self-delete):
+      allow delete: if false;
+    }
+
+    match /userSettings/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && validUserSettings();
+      allow update: if isOwner(userId) && validUserSettings();
+      allow delete: if false;
+    }
+
+    // Default deny all other paths
     match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2025, 9, 11);
+      allow read, write: if false;
     }
   }
 }

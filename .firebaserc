@@ -1,5 +1,13 @@
 {
   "projects": {
     "default": "react-dashboard-2a244"
+  },
+  "targets": {},
+  "etags": {
+    "react-dashboard-2a244": {
+      "extensionInstances": {
+        "functions-auto-stop-billing": "fea7d9f939d8f7644c133b9bc8b88133876780da7171592b58c9274829a079df"
+      }
+    }
   }
 }
