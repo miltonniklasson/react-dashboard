@@ -47,7 +47,7 @@ export function UserProfilePanel() {
   if (unavailable) {
     // Show underlying reason (sanitized) plus guidance.
     return (
-      <div style={{ color: "#666", fontSize: "0.9rem", lineHeight: 1.4 }}>
+      <div style={{ color: "#666", lineHeight: 1.4 }}>
         <strong>Firestore unavailable</strong>
         <div style={{ marginTop: 4 }}>{unavailable}</div>
         <div style={{ marginTop: 4 }}>
@@ -159,11 +159,14 @@ export function UserProfilePanel() {
           )}
         </div>
 
-        <div className="profile-label">Advanced</div>
-        <div className="profile-value">
+        <div
+          className="profile-label"
+          style={{ display: "flex", alignItems: "center", gap: ".5rem" }}
+        >
+          <span>Advanced</span>
           <button
             type="button"
-            className="link-btn small"
+            className="link-btn small adv-toggle"
             aria-expanded={showAdvanced}
             aria-controls="adv-collapse"
             onClick={() => setShowAdvanced((o) => !o)}
@@ -171,6 +174,7 @@ export function UserProfilePanel() {
             {showAdvanced ? "Hide" : "Show"} details
           </button>
         </div>
+        <div className="profile-value" />
         <div
           id="adv-collapse"
           className={"advanced-collapse" + (showAdvanced ? " open" : "")}

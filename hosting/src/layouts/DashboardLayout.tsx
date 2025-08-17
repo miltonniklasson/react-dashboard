@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "@config/firebase";
 import { useAuth } from "@features/auth/AuthProvider";
@@ -39,6 +40,7 @@ function Breadcrumbs({ path }: { path: string }) {
 export function DashboardLayout() {
   const { user, profile, loading } = useAuth();
   const location = useLocation();
+  const [navOpen, setNavOpen] = useState(false);
   const displayName =
     profile?.displayName || user?.displayName || user?.email || "User";
 
@@ -47,17 +49,54 @@ export function DashboardLayout() {
     location.pathname === path ||
     (path !== "/dashboard" && location.pathname.startsWith(path + "/"));
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setNavOpen(false);
+  }, [location.pathname]);
+
   return (
     <div className="app-shell">
       <header className="app-navbar">
-        <strong className="app-logo">Dashboard</strong>
-        <nav className="app-nav" aria-label="Main navigation">
+        <Link
+          to="/dashboard"
+          className="app-logo"
+          style={{ textDecoration: "none", color: "inherit", fontWeight: 600 }}
+        >
+          Dashboard
+        </Link>
+        <button
+          className="nav-toggle btn-quiet"
+          aria-label={navOpen ? "Close menu" : "Open menu"}
+          aria-expanded={navOpen}
+          aria-controls="main-nav"
+          onClick={() => setNavOpen((o) => !o)}
+        >
+          <span className={"burger" + (navOpen ? " is-open" : "")}>
+            <span className="bar" />
+            <span className="bar" />
+            <span className="bar" />
+          </span>
+        </button>
+        <nav
+          id="main-nav"
+          className={`app-nav${navOpen ? " is-open" : ""}`}
+          aria-label="Main navigation"
+        >
           <Link
             to="/dashboard"
             className={`nav-link${isActive("/dashboard") ? " is-active" : ""}`}
             aria-current={isActive("/dashboard") ? "page" : undefined}
           >
             Home
+          </Link>
+          <Link
+            to="/dashboard/profile"
+            className={`nav-link${
+              isActive("/dashboard/profile") ? " is-active" : ""
+            }`}
+            aria-current={isActive("/dashboard/profile") ? "page" : undefined}
+          >
+            Profile
           </Link>
           <Link
             to="/dashboard/settings"
@@ -68,18 +107,30 @@ export function DashboardLayout() {
           >
             Settings
           </Link>
+          {/* Mobile-only user section */}
+          <div className="nav-mobile-user">
+            {loading ? (
+              <span className="skeleton skeleton-text" aria-busy="true" />
+            ) : (
+              <span className="user-name" aria-label="Signed in user">
+                {displayName}
+              </span>
+            )}
+            <button
+              className="btn btn-quiet logout-btn"
+              onClick={() => signOut(auth)}
+            >
+              Logout
+            </button>
+          </div>
         </nav>
         <div className="app-user" aria-live="polite">
           {loading ? (
             <span className="skeleton skeleton-text" aria-busy="true" />
           ) : (
-            <Link
-              to="/dashboard/profile"
-              className="user-name-link"
-              title="View profile"
-            >
+            <span className="user-name" aria-label="Signed in user">
               {displayName}
-            </Link>
+            </span>
           )}
           <button className="btn btn-quiet" onClick={() => signOut(auth)}>
             Logout

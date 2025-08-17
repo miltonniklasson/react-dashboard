@@ -13,13 +13,7 @@ export function SettingsPage() {
     >
       <div>
         <h2 style={{ margin: 0 }}>Settings</h2>
-        <p
-          style={{
-            margin: "0.35rem 0 0",
-            fontSize: ".8rem",
-            color: "var(--color-text-dim)",
-          }}
-        >
+        <p className="card-sub" style={{ margin: ".35rem 0 0" }}>
           Personalize your dashboard experience.
         </p>
       </div>
@@ -28,15 +22,7 @@ export function SettingsPage() {
         style={{ display: "flex", flexDirection: "column", gap: ".9rem" }}
       >
         <header>
-          <h3
-            style={{
-              margin: 0,
-              fontSize: ".85rem",
-              letterSpacing: ".08em",
-              textTransform: "uppercase",
-              color: "var(--color-text-dim)",
-            }}
-          >
+          <h3 className="profile-label" style={{ margin: 0 }}>
             Interface Scale
           </h3>
         </header>
@@ -56,6 +42,7 @@ export function SettingsPage() {
                   className={
                     v === scale ? "scale-radio is-active" : "scale-radio"
                   }
+                  htmlFor={id}
                 >
                   <input
                     type="radio"
@@ -72,27 +59,19 @@ export function SettingsPage() {
           </div>
         </fieldset>
         <div
-          style={{
-            fontSize: ".7rem",
-            color: "var(--color-text-dim)",
-            lineHeight: 1.4,
-          }}
-        >
-          Current:{" "}
-          <strong style={{ color: "var(--color-text)" }}>
-            {Math.round(scale * 100)}%
-          </strong>
-          .
-        </div>
-        <div
+          className="scale-fine-row"
           style={{
             display: "flex",
-            gap: ".5rem",
             alignItems: "center",
-            marginTop: ".1rem",
+            gap: ".6rem",
+            marginTop: ".15rem",
           }}
         >
-          <label htmlFor="scaleRange" style={{ fontSize: ".65rem", width: 60 }}>
+          <label
+            htmlFor="scaleRange"
+            className="small-text"
+            style={{ width: 70 }}
+          >
             Fine tune
           </label>
           <input
@@ -103,18 +82,22 @@ export function SettingsPage() {
             step={0.01}
             value={scale}
             onChange={(e) => setScale(parseFloat(e.target.value))}
-            style={{ flex: 1 }}
+            style={{ flex: 1, minWidth: 0 }}
             aria-label="Fine tune interface scale"
           />
-          <output style={{ fontSize: ".7rem", width: 46, textAlign: "right" }}>
+          <output
+            className="small-text"
+            style={{ width: 46, textAlign: "right" }}
+          >
             {(scale * 100).toFixed(0)}%
           </output>
-        </div>
-        <div style={{ display: "flex", gap: ".5rem" }}>
           <button
             type="button"
-            className="btn-quiet"
+            className="btn-quiet reset-btn"
             onClick={() => setScale(1)}
+            aria-label="Reset interface scale to 100 percent"
+            title="Reset"
+            style={{ flex: "0 0 auto" }}
           >
             Reset
           </button>
